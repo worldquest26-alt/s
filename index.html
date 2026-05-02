@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Das Café | Authentic German Heritage in Spring City, Utah</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        /* COLOR PALETTE & VARIABLES */
+        :root {
+            --bg-cream: #FDFBF7;
+            --text-dark: #2B2927;
+            --text-muted: #5C5853;
+            --accent-rust: #A33A27; 
+            --accent-gold: #C28F27;
+            --border-light: #E8E3D8;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
+
+        /* RESET & BASE */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: var(--font-sans);
+            background-color: var(--bg-cream);
+            color: var(--text-dark);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* SUBTLE FILM GRAIN OVERLAY */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.04"/%3E%3C/svg%3E');
+            pointer-events: none;
+            z-index: 9999;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 600; line-height: 1.2; }
+        
+        /* STICKY NAVIGATION */
+        nav {
+            position: fixed;
+            top: 0; width: 100%;
+            padding: 20px 5vw;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(253, 251, 247, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            transition: all 0.3s ease;
+        }
+
+        .logo { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 700; color: var(--text-dark); text-decoration: none; }
+        
+        .nav-links { display: flex; gap: 30px; align-items: center; }
+        .nav-links a { text-decoration: none; color: var(--text-dark); font-size: 0.9rem; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: color 0.3s; }
+        .nav-links a:hover { color: var(--accent-rust); }
+        
+        .btn {
+            background-color: var(--accent-rust);
+            color: white !important;
+            padding: 12px 24px;
+            border-radius: 2px;
+            transition: background 0.3s, transform 0.2s;
+            border: none;
+            cursor: pointer;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            font-weight: 700;
+        }
+        .btn:hover { background-color: #8A2D1D; transform: translateY(-2px); }
+
+        /* HERO SECTION */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+            background: linear-gradient(rgba(43, 41, 39, 0.7), rgba(43, 41, 39, 0.5)), url('hero.jpg') center/cover no-repeat;
+            color: white;
+            position: relative;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            animation: slideUp 1s ease forwards;
+        }
+
+        .hero h1 { font-size: clamp(3rem, 6vw, 5rem); margin-bottom: 20px; text-shadow: 2px 4px 10px rgba(0,0,0,0.3); }
+        .hero p { font-size: clamp(1.1rem, 2vw, 1.4rem); margin-bottom: 40px; font-weight: 300; font-style: italic; font-family: var(--font-serif); }
+        
+        .hero-buttons { display: flex; gap: 15px; justify-content: center; }
+        .btn-outline { background: transparent; border: 2px solid white; color: white !important; }
+        .btn-outline:hover { background: white; color: var(--text-dark) !important; }
+
+        /* STORY SECTION */
+        .story-section { padding: 120px 5vw; display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; max-width: 1400px; margin: 0 auto; }
+        .story-text h2 { font-size: 3rem; margin-bottom: 30px; color: var(--accent-rust); }
+        .story-text p { font-size: 1.1rem; color: var(--text-muted); margin-bottom: 20px; }
+        .story-image {
+            width: 100%; height: 600px;
+            background: url('story.jpg') center/cover;
+            border-radius: 4px;
+            box-shadow: -20px 20px 0 var(--border-light);
+        }
+
+        /* MENU SECTION */
+        .menu-section { background-color: #F4EFE6; padding: 120px 5vw; }
+        .section-header { text-align: center; margin-bottom: 80px; }
+        .section-header h2 { font-size: 3.5rem; margin-bottom: 15px; }
+        .section-header p { font-family: var(--font-serif); font-style: italic; color: var(--accent-gold); font-size: 1.2rem; }
+
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)); gap: 50px; max-width: 1300px; margin: 0 auto; }
+        .menu-category { margin-bottom: 40px; }
+        .menu-category h3 { font-size: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 10px; margin-bottom: 30px; color: var(--accent-rust); }
+        
+        /* SIDE-BY-SIDE MENU LAYOUT */
+        .menu-item { 
+            display: grid; 
+            grid-template-columns: 130px 1fr; 
+            gap: 20px; 
+            margin-bottom: 30px; 
+            align-items: center; 
+            transition: transform 0.3s; 
+        }
+        .menu-item:hover { transform: translateX(10px); }
+        
+        .menu-item-img {
+            width: 100%;
+            height: 130px;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+            background-color: #ddd; /* Fallback color */
+        }
+
+        .menu-item-header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 5px; }
+        .menu-item-name { font-family: var(--font-serif); font-size: 1.2rem; font-weight: 700; }
+        .menu-item-price { font-weight: 700; color: var(--accent-gold); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; }
+        .menu-item-desc { font-size: 0.95rem; color: var(--text-muted); }
+        
+        /* HIGHLIGHT ITEM */
+        .highlight-item { 
+            background: white; 
+            padding: 20px; 
+            border-left: 4px solid var(--accent-rust); 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05); 
+            grid-template-columns: 1fr 1.2fr; 
+            gap: 25px;
+        }
+        .highlight-item .menu-item-img {
+            height: 180px; 
+        }
+
+        /* HERO ITEM: CARROT CAKE */
+        .hero-item-section {
+            padding: 120px 5vw;
+            display: flex; flex-direction: column; align-items: center; text-align: center;
+            background: var(--bg-cream);
+        }
+        .hero-item-image {
+            width: 100%; max-width: 800px; height: 500px;
+            background: url('https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&w=1200&q=80') center/cover;
+            border-radius: 4px; margin-bottom: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        .hero-item-section h2 { font-size: 3.5rem; color: var(--accent-rust); margin-bottom: 20px; }
+
+        /* REVIEWS / SOCIAL PROOF */
+        /* REVIEWS / SOCIAL PROOF */
+        .reviews { background-color: var(--text-dark); color: white; padding: 100px 5vw; text-align: center; }
+        .review-quote { font-family: var(--font-serif); font-size: 2rem; font-style: italic; max-width: 800px; margin: 0 auto 20px auto; min-height: 120px; }
+        .stars { color: var(--accent-gold); font-size: 1.5rem; margin-bottom: 20px; }
+        
+        /* NEW SLIDER CSS */
+        .review-slider { position: relative; max-width: 800px; margin: 0 auto; }
+        .review-slide { display: none; animation: fadeReview 1s ease-in-out; }
+        .review-slide.active { display: block; }
+        .review-author { text-transform: uppercase; letter-spacing: 2px; font-size: 0.9rem; color: var(--accent-gold); margin-top: 10px; }
+        
+        @keyframes fadeReview {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            .review-quote { font-size: 1.5rem; min-height: 180px; }
+        }
+ 
+        /* BOOKING SYSTEM */
+        .booking-section { padding: 120px 5vw; max-width: 800px; margin: 0 auto; text-align: center; }
+        .booking-section h2 { font-size: 3rem; margin-bottom: 10px; }
+        .scarcity { color: var(--accent-rust); font-weight: 700; margin-bottom: 40px; display: inline-block; padding: 10px 20px; background: #F4EFE6; border-radius: 4px; }
+        
+        form { display: flex; flex-direction: column; gap: 20px; text-align: left; }
+        .input-group { display: flex; gap: 20px; }
+        .input-group > * { flex: 1; }
+        input, select { width: 100%; padding: 15px; border: 1px solid var(--border-light); background: transparent; font-family: var(--font-sans); font-size: 1rem; border-radius: 2px; }
+        input:focus, select:focus { outline: none; border-color: var(--accent-rust); }
+        
+        /* FOOTER */
+        footer { background: #1A1918; color: #E8E3D8; padding: 100px 5vw 40px; }
+        
+        .footer-top { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 50px; margin-bottom: 60px; border-bottom: 1px solid rgba(232, 227, 216, 0.1); padding-bottom: 60px; }
+        .footer-brand p { color: #A09D98; }
+        
+        .footer-info { display: flex; gap: 80px; flex-wrap: wrap; }
+        .footer-column h4 { font-family: var(--font-serif); color: white; margin-bottom: 25px; font-size: 1.8rem; font-weight: 400; letter-spacing: 1px; }
+        .footer-column p { color: #A09D98; font-size: 1.15rem; margin-bottom: 12px; line-height: 1.8; }
+        .footer-column strong { color: #E8E3D8; font-weight: 600; }
+        
+        .footer-phone { color: var(--accent-gold); text-decoration: none; font-size: 1.3rem; font-weight: bold; margin-top: 20px; display: inline-block; transition: color 0.3s; }
+        .footer-phone:hover { color: white; }
+        
+        .footer-bottom { display: flex; flex-direction: column; gap: 30px; }
+        /* The map is now much taller and spans beautifully across the layout */
+        .map-container iframe { width: 100%; height: 350px; border: none; border-radius: 4px; filter: grayscale(10%) contrast(110%); }
+        
+        .footer-copyright { text-align: center; color: #5C5853; font-size: 0.9rem; margin-top: 20px; text-transform: uppercase; letter-spacing: 2px; }
+
+        @media (max-width: 768px) {
+            .footer-top { flex-direction: column; text-align: center; }
+            .footer-info { flex-direction: column; gap: 40px; text-align: center; }
+            .map-container iframe { height: 250px; }
+        }
+
+        /* ANIMATIONS */
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .js-scroll { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .js-scroll.scrolled { opacity: 1; transform: translateY(0); }
+
+        /* MOBILE RESPONSIVENESS */
+        .mobile-nav-toggle { display: none; font-size: 1.5rem; cursor: pointer; color: var(--text-dark); }
+        .mobile-cta-bar { display: none; position: fixed; bottom: 0; width: 100%; background: var(--text-dark); padding: 15px; z-index: 1000; justify-content: space-around; box-shadow: 0 -5px 20px rgba(0,0,0,0.2); }
+        .mobile-cta-bar a { color: white; text-decoration: none; font-weight: 700; font-size: 0.9rem; text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+
+        @media (max-width: 900px) {
+            .story-section { grid-template-columns: 1fr; }
+            .story-image { height: 400px; box-shadow: -10px 10px 0 var(--border-light); }
+            .input-group { flex-direction: column; gap: 20px; }
+        }
+        @media (max-width: 768px) {
+            .nav-links { display: none; }
+            .mobile-nav-toggle { display: block; }
+            .hero h1 { font-size: 2.5rem; }
+            .mobile-cta-bar { display: flex; }
+            body { padding-bottom: 60px; } 
+            
+            .menu-item, .highlight-item { grid-template-columns: 1fr; text-align: center; }
+            .menu-item-img, .highlight-item .menu-item-img { height: 200px; }
+            .menu-item-header { flex-direction: column; align-items: center; gap: 5px; margin-bottom: 10px; }
+        }
+/* OPEN/CLOSED STATUS CURTAIN */
+        .status-curtain {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translate(-50%, -100%); /* Hidden above screen initially */
+            background: rgba(43, 41, 39, 0.95);
+            backdrop-filter: blur(10px);
+            color: #FDFBF7;
+            padding: 12px 30px;
+            border-radius: 0 0 12px 12px;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            border: 1px solid var(--accent-gold);
+            border-top: none;
+            z-index: 2000; /* Stays above the navigation */
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: transform 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); /* Luxurious drop animation */
+        }
+        
+        .status-curtain.drop {
+            transform: translate(-50%, 0); /* Drops into view */
+        }
+        
+        .status-indicator {
+            width: 8px; height: 8px; border-radius: 50%;
+            box-shadow: 0 0 8px currentColor;
+        }
+        
+        .is-open { color: #25D366; } /* Bright Green */
+        .is-closed { color: var(--accent-rust); } /* Rust Red */
+    </style>
+<script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Restaurant",
+      "name": "Das Café",
+      "image": "hero-carrot-cake.jpg",
+      "description": "Family-run, authentic German-American cuisine rooted in a 1981 escape from East Germany. Known for our Reuben, Bratwurst, and Carrot Cake.",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "33 N Main St",
+        "addressLocality": "Spring City",
+        "addressRegion": "UT",
+        "postalCode": "84662",
+        "addressCountry": "US"
+      },
+      "telephone": "+14354627484",
+      "servesCuisine": "German, American, Breakfast",
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "reviewCount": "551"
+      },
+      "openingHours": "We-Sa 08:00-16:00"
+    }
+    </script>
+</head>
+<body>
+<!-- OPEN/CLOSED STATUS CURTAIN -->
+    <div id="statusCurtain" class="status-curtain">
+        <div id="statusIndicator" class="status-indicator"></div>
+        <span id="statusText">Checking...</span>
+    </div>
+    <nav>
+        <a href="index.html" class="logo">Das Café</a>
+        <div class="nav-links">
+            <a href="#story">Our Story</a>
+            <a href="menu.html" style="color: var(--accent-gold); border-bottom: 1px solid var(--accent-gold);">Full Menu</a>
+            <a href="#booking">Reservations</a>
+            <a href="https://www.google.com/searchviewer/42?cvd=CLw_EiYKJOICITIfEhgiFtLX29IPEAoML2cvMTI2MWZjNnExGAI6AwjwDQ%3D%3D&g2lbs=AIBNGdWR0nzkCfzPBD5-AzLxeOzcpmPhr64oKj1cdt0n0ck7DfqH-aGv3GuQws7Z7qQnvfWdHNcV&hl=en-IN&gl=in&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=8Zzxaer4J76gseMP0dmx6Q8&ei=8Zzxaer4J76gseMP0dmx6Q8&fo_s=OA&opi=79508299&orderType=2&ebb=1&cs=0&foub=mcpp" target="_blank" class="btn track-order-btn">Order Online</a>
+        </div>
+        <div class="mobile-nav-toggle">☰</div>
+    </nav>
+
+    <header class="hero">
+        <div class="hero-content">
+            <h1>More Than a Meal.<br>It's a Memory.</h1>
+            <p>A Taste of Germany in a Tiny Town. Built on family, sacrifice, and real food.</p>
+            <div class="hero-buttons">
+                <a href="#booking" class="btn">Reserve a Table</a>
+                <a href="#story" class="btn btn-outline">Read Our Story</a>
+            </div>
+        </div>
+    </header>
+
+    <section id="story" class="story-section js-scroll">
+        <div class="story-text">
+            <h2>The 1981 Escape.</h2>
+            <p>In 1981, our father fled East Germany. He left everything behind, but he brought his family's recipes.</p>
+            <p>In 2011, sisters Caroline Lott and Katy Harmer decided those recipes needed to be shared. With no funding, we put our car up as collateral to build Das Café from the ground up.</p>
+            <p>We aren't a commercial kitchen. We are a family sharing our heritage in the heart of Spring City. From the handmade pottery on our walls to the dill gravy on our Bratwurst, every detail is crafted with warmth and unapologetic authenticity.</p>
+        </div>
+        <div class="story-image"></div>
+    </section>
+
+    <section id="menu" class="menu-section">
+        <div class="section-header js-scroll">
+            <h2>Our Culinary Heritage</h2>
+            <p>Prepared exactly as Opa intended.</p>
+        </div>
+
+        <div class="menu-grid js-scroll">
+            
+            <div class="menu-category">
+                <h3>Morgenessen (Breakfast)</h3>
+                
+                <div class="menu-item highlight-item">
+                    <img src="https://images.unsplash.com/photo-1525351484163-7529414344d8?auto=format&fit=crop&w=600&q=80" alt="The Big Max" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">The Big Max</span>
+                            <span class="menu-item-price">Signature</span>
+                        </div>
+                        <p class="menu-item-desc">Our signature open-faced masterpiece. Hearty, rustic, and strictly built to fuel the day.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <img src="https://images.unsplash.com/photo-1493770348161-369560ae357d?auto=format&fit=crop&w=400&q=80" alt="German Sausage Breakfast" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">German Sausage Breakfast</span>
+                        </div>
+                        <p class="menu-item-desc">Authentic links served with farm-fresh eggs and rustic sides.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <img src="menu-opas-omelette.jpg" alt="Opa's Omelette" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">Opa's Omelette</span>
+                        </div>
+                        <p class="menu-item-desc">A family favorite stuffed with premium meats and local cheese.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <h3>Mittagessen (Mains)</h3>
+                
+                <div class="menu-item highlight-item">
+                    <img src="https://images.unsplash.com/photo-1528736235302-52922df5c122?auto=format&fit=crop&w=600&q=80" alt="The Reuben" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">The Reuben</span>
+                            <span class="menu-item-price">Bestseller</span>
+                        </div>
+                        <p class="menu-item-desc">Slow-cured pastrami, tangy sauerkraut, perfectly grilled on artisan rye. People drive miles for this.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <img src="menu-bratwurst.jpg" alt="Bratwurst Dinner" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">Bratwurst Dinner</span>
+                        </div>
+                        <p class="menu-item-desc">Traditional bratwurst elevated by our legendary dill gravy and signature mashed potatoes.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <img src="menu-kraut-burger.jpg" alt="Kraut Burger" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">Kraut Burger</span>
+                        </div>
+                        <p class="menu-item-desc">A hand-crafted pocket of seasoned beef and house-fermented sauerkraut.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <h3>Heritage Specials</h3>
+                
+                <div class="menu-item highlight-item">
+                    <img src="menu-goulash.jpg" alt="Authentic Goulash" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">Authentic Goulash</span>
+                            <span class="menu-item-price">Heritage</span>
+                        </div>
+                        <p class="menu-item-desc">Slow-simmered, deep, and complex. A true taste of the old country.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <img src="https://images.unsplash.com/photo-1599921841143-819065a55cc6?auto=format&fit=crop&w=400&q=80" alt="Classic Schnitzel" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">Classic Schnitzel</span>
+                        </div>
+                        <p class="menu-item-desc">Pounded thin, breaded, and pan-fried to a flawless golden crisp.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item">
+                    <img src="menu-potato-salad.jpg" alt="German Potato Salad" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">German Potato Salad</span>
+                        </div>
+                        <p class="menu-item-desc">Served warm with bacon and vinegar. A vibrant, authentic side.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-category">
+                <h3>Soups & Drinks</h3>
+                
+                <div class="menu-item">
+                    <img src="https://images.unsplash.com/photo-1547592180-85f173990554?auto=format&fit=crop&w=400&q=80" alt="Rotating Soups" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">Rotating Soups</span>
+                        </div>
+                        <p class="menu-item-desc">Leek, Tortellini, or our comforting Cabbage Soup. Made fresh daily.</p>
+                    </div>
+                </div>
+
+                <div class="menu-item highlight-item">
+                    <img src="https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&w=600&q=80" alt="The Mormon Mocha" class="menu-item-img">
+                    <div class="menu-item-content">
+                        <div class="menu-item-header">
+                            <span class="menu-item-name">The Mormon Mocha</span>
+                            <span class="menu-item-price">Signature</span>
+                        </div>
+                        <p class="menu-item-desc">Our signature regional hot drink. Rich, comforting, and exclusively ours.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="hero-item-section js-scroll">
+        
+        <h3 style="font-family: var(--font-serif); font-style: italic; color: var(--accent-gold); font-size: 2.8rem; margin-bottom: 30px; font-weight: 400;">The Famous Carrot Cake</h3>
+        
+        <div class="hero-item-image"></div>
+        <h2>The Crowning Jewel.</h2>
+         
+        <p style="max-width: 600px; font-size: 1.2rem; color: var(--text-muted); margin-bottom: 30px;">Arguably the best in the state of Utah. Our Carrot Cake is a towering, moist slice of heritage baking. Warmly spiced, unapologetically rich, and known to sell out daily.</p>
+        <a href="#booking" class="btn">Reserve a Slice with Your Table</a>
+    </section>
+
+    <section class="reviews js-scroll">
+        <div class="stars">★★★★★</div>
+        
+        <div class="review-slider">
+            <div class="review-slide active">
+                <p class="review-quote">"A true hidden gem in Sanpete County and the State of Utah! I have never been a fan of sauerkraut in my entire life until Das Cafe. Their Reuben sandwich and Kraut Burger are absolutely delicious!"</p>
+                <p class="review-author">— Josh Dyches (Google Reviews)</p>
+            </div>
+            
+            <div class="review-slide">
+                <p class="review-quote">"One of my wife’s absolute favorite places for a date night. Their carrot cake is incredible—arguably the best in the state—and worth the visit all by itself."</p>
+                <p class="review-author">— N Brown (Google Reviews)</p>
+            </div>
+            
+            <div class="review-slide">
+                <p class="review-quote">"Fun and homey, rustic restaurant. The food was good, staff was very friendly and helpful. Definitely try this place while you're in the area 😉"</p>
+                <p class="review-author">— Flower Fam (Google Reviews)</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="booking" class="booking-section js-scroll">
+        <h2>Secure Your Experience</h2>
+        <p class="scarcity">⚠️ High Demand: We are a small-town destination. Tables fill up quickly.</p>
+        
+        <form id="bookingForm">
+            <div class="input-group">
+                <input type="text" id="name" placeholder="Full Name" required>
+                <input type="tel" id="phone" placeholder="Phone Number" required>
+            </div>
+            <div class="input-group">
+                <select id="guests" required>
+                    <option value="">Number of Guests</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5+">5+ (We will call to confirm)</option>
+                </select>
+                <input type="date" id="date" required>
+            </div>
+            <input type="time" id="time" required>
+            <input type="text" id="requests" placeholder="Special Requests (e.g. Save us a slice of Carrot Cake!)">
+            <button type="submit" class="btn" style="padding: 20px; font-size: 1.1rem; margin-top: 10px;">Request Reservation via WhatsApp</button>
+        </form>
+    </section>
+
+    <footer>
+        <div class="footer-top">
+            <div class="footer-brand">
+                <h2 style="font-family: var(--font-serif); color: var(--accent-gold); font-size: 3.5rem; margin-bottom: 10px;">Das Café</h2>
+                <p style="font-size: 1.2rem; font-style: italic; max-width: 300px;">A taste of Germany, rooted in Spring City.</p>
+            </div>
+            
+            <div class="footer-info">
+                <div class="footer-column">
+                    <h4>Visit Us</h4>
+                    <p>33 N Main St<br>Spring City, UT 84662</p>
+                    <a href="tel:+14354627484" class="footer-phone">📞 (435) 462-7484</a>
+                </div>
+                <div class="footer-column">
+                    <h4>Hours</h4>
+                    <p><strong>Wed - Sat:</strong> 8:00 AM - 4:00 PM</p>
+                    <p><strong>Breakfast until:</strong> 11:00 AM</p>
+                    <p><strong>Sun - Tue:</strong> Closed</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <div class="map-container">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3080.528448896068!2d-111.49887758463991!3d39.47352347948588!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x874c6530a5c4e0b3%3A0x6b77242c161ab8b!2s33%20N%20Main%20St%2C%20Spring%20City%2C%20UT%2084662!5e0!3m2!1sen!2sus!4v1682855142436!5m2!1sen!2sus" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            <div class="footer-copyright">
+                <p>&copy; 2026 Das Café. All Rights Reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <div class="mobile-cta-bar">
+        <a href="tel:+14354627484">📞 Call</a>
+        <a href="#booking">📅 Book</a>
+        <a href="https://www.google.com/searchviewer/42?cvd=CLw_EiYKJOICITIfEhgiFtLX29IPEAoML2cvMTI2MWZjNnExGAI6AwjwDQ%3D%3D&g2lbs=AIBNGdWR0nzkCfzPBD5-AzLxeOzcpmPhr64oKj1cdt0n0ck7DfqH-aGv3GuQws7Z7qQnvfWdHNcV&hl=en-IN&gl=in&fo_m=MfohQo559jFvMUOzJVpjPL1YMfZ3bInYwBDuMfaXTPp5KXh-&utm_source=tactile&gei=8Zzxaer4J76gseMP0dmx6Q8&ei=8Zzxaer4J76gseMP0dmx6Q8&fo_s=OA&opi=79508299&orderType=2&ebb=1&cs=0&foub=mcpp" target="_blank">🛒 Order</a>
+    </div>
+
+    <script>
+        const scrollElements = document.querySelectorAll(".js-scroll");
+        
+        const elementInView = (el, dividend = 1) => {
+            const elementTop = el.getBoundingClientRect().top;
+            return (elementTop <= (window.innerHeight || document.documentElement.clientHeight) / dividend);
+        };
+        
+        const displayScrollElement = (element) => {
+            element.classList.add("scrolled");
+        };
+        
+        const handleScrollAnimation = () => {
+            scrollElements.forEach((el) => {
+                if (elementInView(el, 1.15)) {
+                    displayScrollElement(el);
+                }
+            })
+        }
+        
+        window.addEventListener("scroll", () => {
+            handleScrollAnimation();
+        });
+        
+        handleScrollAnimation();
+
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const phone = document.getElementById('phone').value;
+            const guests = document.getElementById('guests').value;
+            const date = document.getElementById('date').value;
+            const time = document.getElementById('time').value;
+            const requests = document.getElementById('requests').value || "None";
+            
+            const message = `*Das Café Reservation Request*%0A%0A*Name:* ${name}%0A*Phone:* ${phone}%0A*Guests:* ${guests}%0A*Date:* ${date}%0A*Time:* ${time}%0A*Special Requests:* ${requests}%0A%0A_We are excited to visit! Please confirm availability._`;
+            
+            const whatsappNumber = "14354627484"; 
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            window.open(whatsappURL, '_blank');
+            this.reset();
+        });
+// Review Auto-Slider Logic
+        const slides = document.querySelectorAll('.review-slide');
+        let currentSlide = 0;
+        
+        setInterval(() => {
+            slides[currentSlide].classList.remove('active');
+            currentSlide = (currentSlide + 1) % slides.length;
+            slides[currentSlide].classList.add('active');
+        }, 5000); // Changes review every 5 seconds
+// Smart Date Picker (Prevents booking in the past)
+        const dateInput = document.getElementById('date');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+// Restaurant Open/Closed Status Logic
+        function checkRestaurantStatus() {
+            // Force the calculation to use Utah's time zone (Mountain Time)
+            const now = new Date();
+            const utahTimeStr = now.toLocaleString("en-US", {timeZone: "America/Denver"});
+            const utahDate = new Date(utahTimeStr);
+
+            const day = utahDate.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+            const hour = utahDate.getHours(); // 0-23 (Military Time)
+
+            let isOpen = false;
+
+            // Open Wednesday (3) through Saturday (6)
+            if (day >= 3 && day <= 6) {
+                // Open 8:00 AM (8) to 4:00 PM (15:59)
+                if (hour >= 8 && hour < 16) { 
+                    isOpen = true;
+                }
+            }
+
+            const curtain = document.getElementById('statusCurtain');
+            const statusText = document.getElementById('statusText');
+            const statusIndicator = document.getElementById('statusIndicator');
+
+            if (isOpen) {
+                statusText.innerText = "Open Now";
+                statusIndicator.className = "status-indicator is-open";
+            } else {
+                statusText.innerText = "Currently Closed";
+                statusIndicator.className = "status-indicator is-closed";
+            }
+
+            // Drop the curtain into view 1 second after the website loads
+            setTimeout(() => {
+                curtain.classList.add('drop');
+            }, 1000);
+        }
+
+        // Run the check when the page loads
+        checkRestaurantStatus();
+    </script>
+</body>
+</html>

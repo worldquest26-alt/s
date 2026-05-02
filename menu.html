@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Menu | Das Café</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-dark: #1A1918;
+            --text-light: #FDFBF7;
+            --text-muted: #A09D98;
+            --accent-gold: #C28F27;
+            --accent-rust: #A33A27;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Lato', sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-sans);
+            background: linear-gradient(rgba(26, 25, 24, 0.95), rgba(26, 25, 24, 0.95)), url('hero-background.jpg') center/cover fixed;
+            color: var(--text-light);
+            line-height: 1.6;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Subtle Film Grain */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background-image: url('data:image/svg+xml,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.8" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)" opacity="0.05"/%3E%3C/svg%3E');
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        /* Top Navigation Back Button */
+        .back-nav {
+            max-width: 900px;
+            margin: 0 auto 60px auto;
+        }
+        .back-nav a {
+            color: var(--accent-gold);
+            text-decoration: none;
+            font-family: var(--font-sans);
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.3s;
+        }
+        .back-nav a:hover { color: var(--text-light); }
+
+        /* Menu Container */
+        .menu-container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: rgba(26, 25, 24, 0.6);
+            border: 1px solid rgba(194, 143, 39, 0.2);
+            padding: 80px 6vw;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        /* Header */
+        .menu-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+        .menu-header h1 {
+            font-family: var(--font-serif);
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            color: var(--accent-gold);
+            font-weight: 400;
+            line-height: 1.2;
+            margin-bottom: 15px;
+            letter-spacing: 1px;
+        }
+        .menu-header p {
+            font-family: var(--font-serif);
+            font-style: italic;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+        }
+
+        /* Menu Categories */
+        .menu-category {
+            margin-bottom: 60px;
+        }
+        .category-title {
+            font-family: var(--font-serif);
+            font-size: 2.2rem;
+            color: var(--text-light);
+            border-bottom: 1px solid rgba(194, 143, 39, 0.4);
+            padding-bottom: 10px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Fine-Dining Item Layout (Item ..... Price) */
+        .menu-item {
+            margin-bottom: 25px;
+        }
+        .item-row {
+            display: flex;
+            align-items: baseline;
+            margin-bottom: 5px;
+        }
+        .item-name {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-light);
+            flex-shrink: 0;
+        }
+        .item-signature {
+            color: var(--accent-rust);
+            font-size: 0.9rem;
+            font-family: var(--font-sans);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-left: 10px;
+            font-weight: 700;
+        }
+        .leader {
+            flex-grow: 1;
+            border-bottom: 2px dotted rgba(160, 157, 152, 0.3);
+            margin: 0 15px;
+        }
+        .item-price {
+            font-family: var(--font-sans);
+            font-weight: 700;
+            color: var(--accent-gold);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+        .item-desc {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            color: var(--text-muted);
+            font-style: italic;
+            max-width: 85%;
+        }
+
+        @media (max-width: 600px) {
+            .menu-container { padding: 40px 20px; }
+            .item-row { flex-direction: column; align-items: flex-start; }
+            .leader { display: none; }
+            .item-price { margin-top: 5px; font-size: 1rem; }
+            .item-signature { display: block; margin-left: 0; margin-top: 2px; }
+            .item-desc { max-width: 100%; }
+        }
+/* --- DYNAMIC ORDERING SYSTEM UI --- */
+        
+        /* Floating Order Now Button */
+        .floating-order-btn {
+            position: fixed; bottom: 30px; right: 30px;
+            background: var(--accent-rust); color: white;
+            border: none; border-radius: 50px;
+            padding: 15px 30px; font-family: var(--font-sans);
+            font-size: 1.1rem; font-weight: bold; text-transform: uppercase; letter-spacing: 1px;
+            box-shadow: 0 10px 25px rgba(163, 58, 39, 0.4);
+            cursor: pointer; z-index: 1000; transition: transform 0.3s, background 0.3s;
+        }
+        .floating-order-btn:hover { transform: translateY(-5px); background: #8A2D1D; }
+
+        /* Floating Cart Button (Hidden until items are added) */
+        .floating-cart-btn {
+            position: fixed; top: 30px; right: 30px;
+            background: var(--accent-gold); color: var(--bg-dark);
+            border: none; border-radius: 50%;
+            width: 65px; height: 65px; font-size: 1.5rem;
+            box-shadow: 0 10px 25px rgba(194, 143, 39, 0.4);
+            cursor: pointer; z-index: 1000; display: none;
+            align-items: center; justify-content: center;
+            transition: transform 0.3s;
+        }
+        .floating-cart-btn:hover { transform: scale(1.1); }
+        .cart-count {
+            position: absolute; top: -2px; right: -2px;
+            background: var(--accent-rust); color: white;
+            border-radius: 50%; width: 26px; height: 26px;
+            font-size: 0.9rem; font-weight: bold; font-family: var(--font-sans);
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* The Gold '+' Button */
+        .add-btn {
+            background: transparent; border: 1px solid var(--accent-gold);
+            color: var(--accent-gold); border-radius: 50%;
+            width: 28px; height: 28px; display: none; /* Hidden by default */
+            align-items: center; justify-content: center;
+            cursor: pointer; margin-left: 15px; font-size: 1.2rem; font-weight: bold;
+            transition: all 0.3s; align-self: center;
+        }
+        .add-btn:hover { background: var(--accent-gold); color: var(--bg-dark); }
+        body.order-mode-active .add-btn { display: flex; } /* Shows when Order Mode is on */
+        body.order-mode-active .floating-order-btn { display: none; } /* Hides Order Now button */
+
+        /* Cart Modal Window */
+        .cart-overlay {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.8); z-index: 1001; display: none; backdrop-filter: blur(5px);
+        }
+        .cart-modal {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: var(--bg-dark); border: 1px solid var(--accent-gold);
+            padding: 40px; border-radius: 8px; width: 90%; max-width: 500px;
+            z-index: 1002; display: none; color: var(--text-light); box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+        }
+        .cart-modal h2 { font-family: var(--font-serif); color: var(--accent-gold); font-size: 2rem; margin-bottom: 20px; }
+        .cart-items { max-height: 300px; overflow-y: auto; margin-bottom: 20px; padding-right: 10px; }
+        .cart-item { display: flex; justify-content: space-between; margin-bottom: 15px; padding-bottom: 10px; border-bottom: 1px dotted rgba(255,255,255,0.2); font-family: var(--font-sans); }
+        .cart-total { display: flex; justify-content: space-between; font-size: 1.4rem; font-weight: bold; color: var(--accent-gold); margin-bottom: 5px; font-family: var(--font-sans); }
+        .close-cart { position: absolute; top: 15px; right: 20px; cursor: pointer; font-size: 2rem; color: var(--text-muted); background: none; border: none; transition: color 0.3s; }
+        .close-cart:hover { color: white; }
+        .place-order-btn { 
+            width: 100%; background: #25D366; color: white; padding: 15px; 
+            border: none; border-radius: 4px; font-size: 1.1rem; font-weight: bold; text-transform: uppercase;
+            cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 10px; transition: background 0.3s; font-family: var(--font-sans);
+        }
+        .place-order-btn:hover { background: #1EBE57; }
+/* Checkout Fields */
+        .checkout-fields { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; }
+        .checkout-fields input, .checkout-fields select {
+            width: 100%; padding: 12px; background: rgba(0,0,0,0.2);
+            border: 1px solid rgba(194, 143, 39, 0.4); color: white;
+            border-radius: 4px; font-family: var(--font-sans); font-size: 1rem;
+        }
+        .checkout-fields input:focus, .checkout-fields select:focus {
+            outline: none; border-color: var(--accent-gold);
+        }
+        .checkout-fields input::placeholder { color: var(--text-muted); }
+    </style>
+</head>
+<body>
+
+    <div class="back-nav">
+        <a href="index.html">← Return to Das Café</a>
+    </div>
+
+    <div class="menu-container">
+        
+        <div class="menu-header">
+            <h1>The Delicious Dishes of<br>DAS CAFE</h1>
+            <p>Authentic recipes, prepared from scratch.</p>
+        </div>
+
+        <div class="menu-category">
+            <h2 class="category-title">Breakfast</h2>
+            
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Farmer’s Breakfast</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$10 – $14</span>
+                </div>
+                <div class="item-desc">Eggs, bacon, potatoes, toast</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">German Sausage Breakfast</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$11 – $15</span>
+                </div>
+                <div class="item-desc">Eggs with German sausage & potatoes</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Opa’s Omelette</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$10 – $14</span>
+                </div>
+                <div class="item-desc">German-style omelette with fillings</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Belgian Waffles</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$8 – $12</span>
+                </div>
+                <div class="item-desc">Classic waffles with toppings</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Big Max</span><span class="item-signature">Signature</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$12 – $16</span>
+                </div>
+                <div class="item-desc">Open-faced rye sandwich with eggs, ham, Swiss, sauerkraut</div>
+            </div>
+        </div>
+
+        <div class="menu-category">
+            <h2 class="category-title">Lunch / Mains</h2>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Reuben Sandwich</span><span class="item-signature">Famous</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$12 – $16</span>
+                </div>
+                <div class="item-desc">Corned beef, sauerkraut, Swiss, rye bread</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Bratwurst Dinner</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$13 – $18</span>
+                </div>
+                <div class="item-desc">German sausages with sides</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Bratwurst on Pretzel Bun</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$11 – $15</span>
+                </div>
+                <div class="item-desc">Sausage in pretzel bun</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Kraut Burger</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$11 – $15</span>
+                </div>
+                <div class="item-desc">Burger with sauerkraut twist</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Club Sandwich</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$10 – $14</span>
+                </div>
+                <div class="item-desc">Classic layered sandwich</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Build Your Own Sandwich</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$9 – $14</span>
+                </div>
+                <div class="item-desc">Custom fillings on fresh artisan bread</div>
+            </div>
+        </div>
+
+        <div class="menu-category">
+            <h2 class="category-title">German Specials</h2>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Authentic Goulash</span><span class="item-signature">Signature</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$14 – $18</span>
+                </div>
+                <div class="item-desc">Beef stew with mashed potatoes & red cabbage</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Classic Schnitzel</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$14 – $19</span>
+                </div>
+                <div class="item-desc">Breaded meat with traditional sides</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Sauerkraut Dishes</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$10 – $15</span>
+                </div>
+                <div class="item-desc">Traditional fermented cabbage meals</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Dill Gravy Potatoes</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$8 – $12</span>
+                </div>
+                <div class="item-desc">Mashed potatoes draped with dill gravy</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">German Potato Salad</span><span class="item-signature">Signature</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$6 – $9</span>
+                </div>
+                <div class="item-desc">Authentic warm potato salad</div>
+            </div>
+        </div>
+
+        <div class="menu-category">
+            <h2 class="category-title">Soups (Rotating)</h2>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Leek Soup</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$5 – $8</span>
+                </div>
+                <div class="item-desc">Creamy leek-based soup</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Tortellini Soup</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$6 – $9</span>
+                </div>
+                <div class="item-desc">Rich pasta-based soup</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Cabbage Soup</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$5 – $8</span>
+                </div>
+                <div class="item-desc">Traditional comforting cabbage soup</div>
+            </div>
+        </div>
+
+        <div class="menu-category">
+            <h2 class="category-title">Desserts</h2>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Carrot Cake</span><span class="item-signature">Legendary</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$6 – $9</span>
+                </div>
+                <div class="item-desc">Cream cheese frosting, coconut topping</div>
+            </div>
+        </div>
+
+        <div class="menu-category">
+            <h2 class="category-title">Drinks</h2>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">The Mormon Mocha</span><span class="item-signature">Signature</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$4 – $6</span>
+                </div>
+                <div class="item-desc">Specialty mocha drink</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Coffee / Decaf</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$2 – $4</span>
+                </div>
+                <div class="item-desc">Fresh brewed house coffee</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Hot Chocolate</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$3 – $5</span>
+                </div>
+                <div class="item-desc">Classic hot chocolate</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Tea</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$2 – $4</span>
+                </div>
+                <div class="item-desc">Selection of hot teas</div>
+            </div>
+
+            <div class="menu-item">
+                <div class="item-row">
+                    <span class="item-name">Lemonade / Sodas</span>
+                    <div class="leader"></div>
+                    <span class="item-price">$2 – $4</span>
+                </div>
+                <div class="item-desc">Cold beverages</div>
+            </div>
+        </div>
+
+    </div>
+<!-- ORDERING SYSTEM UI -->
+    <button class="floating-order-btn" id="startOrderBtn">🍽️ Order Now</button>
+    <button class="floating-cart-btn" id="cartBtn">🛒<span class="cart-count" id="cartCount">0</span></button>
+
+    <div class="cart-overlay" id="cartOverlay"></div>
+    <div class="cart-modal" id="cartModal">
+        <button class="close-cart" id="closeCart">&times;</button>
+        <h2>Your Cart</h2>
+        <div class="cart-items" id="cartItems">
+            <!-- Items will inject here automatically -->
+        </div>
+        <div class="cart-total">
+            <span>Estimated Total:</span>
+            <span id="cartTotalVal">$0.00</span>
+        </div>
+        
+        <!-- NEW CHECKOUT DETAILS -->
+        <div class="checkout-fields">
+            <input type="text" id="customerName" placeholder="Your Full Name" required>
+            <input type="tel" id="customerPhone" placeholder="Phone Number" required>
+            <select id="orderType">
+                <option value="Dine-In">Dine-In (We are sitting at a table)</option>
+                <option value="Takeout">Takeout (I will pick it up)</option>
+            </select>
+        </div>
+
+        <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 25px; font-style: italic;">
+            *Because some dishes have price ranges based on customization, this is an estimate. Final price will be confirmed via WhatsApp.
+        </p>
+        <button class="place-order-btn" id="placeOrderBtn">📱 Send Order to WhatsApp</button>
+    </div>
+<!-- JAVASCRIPT: THE ORDERING ENGINE -->
+    <script>
+        let cart = [];
+        let estimatedTotal = 0;
+
+        // 1. Auto-Inject '+' buttons into the existing menu
+        document.querySelectorAll('.item-row').forEach(row => {
+            const addBtn = document.createElement('button');
+            addBtn.className = 'add-btn';
+            addBtn.innerHTML = '+';
+            addBtn.onclick = function() {
+                const itemName = row.querySelector('.item-name').innerText;
+                const itemPriceText = row.querySelector('.item-price').innerText;
+                addToCart(itemName, itemPriceText);
+            };
+            row.appendChild(addBtn);
+        });
+
+        // 2. Start Order Mode
+        document.getElementById('startOrderBtn').addEventListener('click', () => {
+            document.body.classList.add('order-mode-active');
+            // Optional: Scroll to the top of the menu when activated
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // 3. Add to Cart Logic
+        function addToCart(name, priceText) {
+            // Extract the base price for the estimate (e.g. grabs "12" from "$12 - $16")
+            const basePriceMatch = priceText.match(/\d+/);
+            const basePrice = basePriceMatch ? parseFloat(basePriceMatch[0]) : 0;
+            
+            cart.push({ name: name, priceText: priceText, basePrice: basePrice });
+            estimatedTotal += basePrice;
+            
+            updateCartUI();
+            
+            // Pop effect on the cart button to show item was added
+            const cartBtn = document.getElementById('cartBtn');
+            cartBtn.style.transform = 'scale(1.2)';
+            setTimeout(() => cartBtn.style.transform = 'scale(1)', 200);
+        }
+
+        // 4. Update the Cart visuals
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartBtn = document.getElementById('cartBtn');
+            const cartItemsDiv = document.getElementById('cartItems');
+            const cartTotalVal = document.getElementById('cartTotalVal');
+
+            // Show or hide floating cart
+            if (cart.length > 0) {
+                cartBtn.style.display = 'flex';
+            }
+            
+            cartCount.innerText = cart.length;
+            cartTotalVal.innerText = '$' + estimatedTotal.toFixed(2);
+
+            // Populate items list
+            cartItemsDiv.innerHTML = '';
+            cart.forEach((item, index) => {
+                cartItemsDiv.innerHTML += `
+                    <div class="cart-item">
+                        <span>${item.name}</span>
+                        <span style="color: var(--accent-gold);">${item.priceText}</span>
+                    </div>
+                `;
+            });
+        }
+
+        // 5. Open and Close Cart Modal
+        const cartOverlay = document.getElementById('cartOverlay');
+        const cartModal = document.getElementById('cartModal');
+
+        document.getElementById('cartBtn').addEventListener('click', () => {
+            cartOverlay.style.display = 'block';
+            cartModal.style.display = 'block';
+        });
+
+        document.getElementById('closeCart').addEventListener('click', closeCartFunc);
+        cartOverlay.addEventListener('click', closeCartFunc);
+
+        function closeCartFunc() {
+            cartOverlay.style.display = 'none';
+            cartModal.style.display = 'none';
+        }
+
+        // 6. Send to WhatsApp
+        document.getElementById('placeOrderBtn').addEventListener('click', () => {
+            if (cart.length === 0) return;
+
+            // Grab the customer details
+            const custName = document.getElementById('customerName').value;
+            const custPhone = document.getElementById('customerPhone').value;
+            const orderType = document.getElementById('orderType').value;
+
+            // Stop them if they didn't put a name or phone number!
+            if (!custName || !custPhone) {
+                alert("Please enter your name and phone number so we know whose order this is!");
+                return;
+            }
+
+            let message = `*🍽️ New Order Request - Das Café*%0A%0A`;
+            message += `*Customer:* ${custName}%0A`;
+            message += `*Phone:* ${custPhone}%0A`;
+            message += `*Type:* ${orderType}%0A%0A`;
+            message += `*--- Order Details ---*%0A`;
+            
+            // Group identical items
+            let itemCounts = {};
+            cart.forEach(item => {
+                const key = `${item.name} (${item.priceText})`;
+                itemCounts[key] = (itemCounts[key] || 0) + 1;
+            });
+
+            for (const [item, count] of Object.entries(itemCounts)) {
+                message += `${count}x ${item}%0A`;
+            }
+
+            message += `%0A*Estimated Total:* $${estimatedTotal.toFixed(2)}%0A%0A`;
+            message += `_Please let me know the final total and preparation time!_`;
+
+            // Using Das Cafe's listed phone number
+            const whatsappNumber = "14354627484";
+            const whatsappURL = `https://wa.me/${whatsappNumber}?text=${message}`;
+            
+            window.open(whatsappURL, '_blank');
+        });
+    </script>
+</body>
+</html>
